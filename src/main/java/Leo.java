@@ -9,16 +9,31 @@ public class Leo {
         System.out.println("What can I do for you?");
         System.out.println(BAR);
 
+        String[] tasks = new String[100];
+        int taskCount = 0;
+
         Scanner sc = new Scanner(System.in);
         while (true) {
             if (!sc.hasNextLine()) {
                 break;
             }
-            String line = sc.nextLine();
+            String line = sc.nextLine().trim();
+
             if (line.equals("bye")) {
                 break;
+            } else if (line.equals("list")) {
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println((i + 1) + ". " + tasks[i]);
+                }
+            } else if (!line.isEmpty()) {
+                if (taskCount < tasks.length) {
+                    tasks[taskCount++] = line;
+                    System.out.println("added: " + line);
+                } else {
+                    // friendly message when >100 items
+                    System.out.println("Sorry, I can only store up to 100 tasks for now.");
+                }
             }
-            System.out.println(line);
         }
         sc.close();
 
