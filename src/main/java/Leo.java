@@ -5,22 +5,22 @@ public class Leo {
         Ui ui = new Ui();
         ui.showGreeting();
 
-        TaskList tasks = new TaskList();
-        Parser parser = new Parser(ui, tasks);
+        Storage storage = new Storage();
+        TaskList tasks = new TaskList(storage.load());
+        Parser parser = new Parser(ui, tasks, storage);
 
         Scanner sc = new Scanner(System.in);
         while (true) {
-            if (!sc.hasNextLine()) {
-                break;
-            }
+            if (!sc.hasNextLine()) break; // EOF-safe
             String line = sc.nextLine().trim();
-            if (line.equals("bye")) {
-                break;
+            if (line.equals("bye")) break;
+            try {
+                parser.handle(line);
+            } catch (LeoException e) {
+                ui.showBoxLine("OOPS!!! " + e.getMessage());
             }
-            parser.handle(line);
         }
         sc.close();
-
         ui.showFarewell();
     }
 }
