@@ -4,6 +4,14 @@ import java.util.List;
 public class TaskList {
     private final List<Task> tasks = new ArrayList<>();
 
+    public TaskList() {}
+
+    public TaskList(List<Task> initial) {
+        if (initial != null) {
+            tasks.addAll(initial);
+        }
+    }
+
     public void add(Task t) {
         tasks.add(t);
     }
@@ -18,6 +26,10 @@ public class TaskList {
 
     public Task remove(int oneBasedIndex) {
         return tasks.remove(oneBasedIndex - 1);
+    }
+
+    public List<Task> asList() {
+        return new ArrayList<>(tasks);
     }
 
     public String formatListForBox() {

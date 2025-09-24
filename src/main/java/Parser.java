@@ -1,10 +1,12 @@
 public class Parser {
     private final Ui ui;
     private final TaskList tasks;
+    private final Storage storage;
 
-    public Parser(Ui ui, TaskList tasks) {
+    public Parser(Ui ui, TaskList tasks, Storage storage) {
         this.ui = ui;
         this.tasks = tasks;
+        this.storage = storage;
     }
 
     public void handle(String line) throws LeoException {
@@ -53,10 +55,8 @@ public class Parser {
         }
         Task t = tasks.get(idx);
         t.mark();
-        ui.showBox(
-                "Nice! I've marked this task as done:",
-                "  " + t
-        );
+        storage.save(tasks); // Level-7: persist
+        ui.showBox("Nice! I've marked this task as done:", "  " + t);
     }
 
     private void handleUnmark(String arg) throws LeoException {
@@ -66,20 +66,21 @@ public class Parser {
         }
         Task t = tasks.get(idx);
         t.unmark();
-        ui.showBox(
-                "OK, I've marked this task as not done yet:",
-                "  " + t
-        );
+        storage.save(tasks);
+        ui.showBox("OK, I've marked this task as not done yet:", "  " + t);
     }
 
     private void handleDelete(String arg) throws LeoException {
         Integer idx = parseIndex(arg);
-        if (!validIndex(idx)) throw new LeoException("Please give a valid task number to delete.");
+        if (!validIndex(idx)) {
+            throw new LeoException("Please give a valid task number to delete.");
+        }
         Task removed = tasks.remove(idx);
+        storage.save(tasks);
         ui.showBox(
                 "Noted. I've removed this task:",
                 "  " + removed.toString(),
-                "Now you have " + tasks.size() + " tasks in the list."
+                "Now you have " + tasks.size() + " task(s) in the list."
         );
     }
 
@@ -90,6 +91,7 @@ public class Parser {
         }
         Todo t = new Todo(desc);
         tasks.add(t);
+        storage.save(tasks);
         showAddedTaskBox(t);
     }
 
@@ -106,6 +108,7 @@ public class Parser {
         }
         Deadline t = new Deadline(desc, by);
         tasks.add(t);
+        storage.save(tasks);
         showAddedTaskBox(t);
     }
 
@@ -127,6 +130,7 @@ public class Parser {
             }
             Event t = new Event(desc, from, to);
             tasks.add(t);
+            storage.save(tasks);
             showAddedTaskBox(t);
             return;
         }
@@ -138,6 +142,7 @@ public class Parser {
             }
             Event t = new Event(desc, at, null);
             tasks.add(t);
+            storage.save(tasks);
             showAddedTaskBox(t);
             return;
         }
@@ -148,7 +153,7 @@ public class Parser {
         ui.showBox(
                 "Got it. I've added this task:",
                 "  " + t.toString(),
-                "Now you have " + tasks.size() + " tasks in the list."
+                "Now you have " + tasks.size() + " task(s) in the list."
         );
     }
 
