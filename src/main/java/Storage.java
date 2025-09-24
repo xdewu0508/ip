@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 public class Storage {
     private final Path dataDir = Path.of("data");
@@ -53,11 +54,11 @@ public class Storage {
         if (t instanceof Todo) {
             return String.join(" | ", "T", done, t.description);
         } else if (t instanceof Deadline d) {
-            return String.join(" | ", "D", done, t.description, d.getBy());
-        } else if (t instanceof Event e) {
-            // store from/to; if single-time (/at), 'to' is blank
-            String from = e.getFrom() == null ? "" : e.getFrom();
-            String to = e.getTo() == null ? "" : e.getTo();
+            return String.join(" | ", "D", done, t.description, DateTimeUtil.formatForStorage(d.getBy()));
+        }
+        else if (t instanceof Event e) {
+            String from = e.getFrom() == null ? "" : DateTimeUtil.formatForStorage(e.getFrom());
+            String to = e.getTo() == null ? "" : DateTimeUtil.formatForStorage(e.getTo());
             return String.join(" | ", "E", done, t.description, from, to);
         }
         return "";
@@ -76,11 +77,13 @@ public class Storage {
                 t = new Todo(desc);
                 break;
             case "D":
-                if (parts.length >= 4) t = new Deadline(desc, parts[3]);
+                LocalDateTime by = DateTimeUtil.parseFromStorage(parts[3]);
+                t = new Deadline(desc, by);
                 break;
             case "E":
-                String from = parts.length >= 4 ? parts[3] : null;
-                String to = parts.length >= 5 ? parts[4] : null;
+                LocalDateTime from = parts[3].isEmpty() ? null : DateTimeUtil.parseFromStorage(parts[3]);
+                LocalDateTime to = parts.length >= 5 && !parts[4].isEmpty()
+                        ? DateTimeUtil.parseFromStorage(parts[4]) : null;
                 t = new Event(desc, from, to);
                 break;
             default:

@@ -1,3 +1,6 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
 public class Parser {
     private final Ui ui;
     private final TaskList tasks;
@@ -96,57 +99,51 @@ public class Parser {
     }
 
     private void handleDeadline(String remainder) throws LeoException {
-        String payload = remainder == null ? "" : remainder.trim(); // "<desc> /by <time>"
-        int pos = lastKeyword(payload, "/by");
-        if (payload.isEmpty() || pos <= 0 || pos + 3 >= payload.length()) {
-            throw new LeoException("Usage: deadline <description> /by <time>");
+        int pos = lastKeyword(remainder, "/by");
+        if (pos <= 0) {
+            throw new LeoException("Usage: deadline <desc> /by <date-time>");
         }
-        String desc = payload.substring(0, pos).trim();
-        String by = payload.substring(pos + 3).trim();
-        if (desc.isEmpty() || by.isEmpty()) {
-            throw new LeoException("Usage: deadline <description> /by <time>");
+        String desc = remainder.substring(0, pos).trim();
+        String byStr = remainder.substring(pos + 3).trim();
+        try {
+            LocalDateTime by = DateTimeUtil.parse(byStr);
+            Deadline d = new Deadline(desc, by);
+            tasks.add(d);
+            storage.save(tasks);
+            showAddedTaskBox(d);
+        } catch (DateTimeParseException e) {
+            throw new LeoException("Invalid date format. Use d/M/yyyy HHmm or yyyy-MM-dd HHmm.");
         }
-        Deadline t = new Deadline(desc, by);
-        tasks.add(t);
-        storage.save(tasks);
-        showAddedTaskBox(t);
     }
 
     private void handleEvent(String remainder) throws LeoException {
-        String payload = remainder == null ? "" : remainder.trim();
-        if (payload.isEmpty()) {
-            throw new LeoException("Usage: event <description> /from <start> /to <end>");
-        }
-        int posFrom = lastKeyword(payload, "/from");
-        int posTo   = lastKeyword(payload, "/to");
-        int posAt   = lastKeyword(payload, "/at");
-
-        if (posFrom > 0 && posTo > posFrom) {
-            String desc = payload.substring(0, posFrom).trim();
-            String from = payload.substring(posFrom + 5, posTo).trim();
-            String to   = payload.substring(posTo + 3).trim();
-            if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
-                throw new LeoException("Usage: event <description> /from <start> /to <end>");
+        int posFrom = lastKeyword(remainder, "/from");
+        int posTo = lastKeyword(remainder, "/to");
+        int posAt = lastKeyword(remainder, "/at");
+        try {
+            if (posFrom > 0 && posTo > posFrom) {
+                String desc = remainder.substring(0, posFrom).trim();
+                LocalDateTime from = DateTimeUtil.parse(remainder.substring(posFrom + 5, posTo).trim());
+                LocalDateTime to = DateTimeUtil.parse(remainder.substring(posTo + 3).trim());
+                Event e = new Event(desc, from, to);
+                tasks.add(e);
+                storage.save(tasks);
+                showAddedTaskBox(e);
+                return;
             }
-            Event t = new Event(desc, from, to);
-            tasks.add(t);
-            storage.save(tasks);
-            showAddedTaskBox(t);
-            return;
-        }
-        if (posAt > 0) {
-            String desc = payload.substring(0, posAt).trim();
-            String at   = payload.substring(posAt + 3).trim();
-            if (desc.isEmpty() || at.isEmpty()) {
-                throw new LeoException("Usage: event <description> /from <start> /to <end>");
+            if (posAt > 0) {
+                String desc = remainder.substring(0, posAt).trim();
+                LocalDateTime at = DateTimeUtil.parse(remainder.substring(posAt + 3).trim());
+                Event e = new Event(desc, at, null);
+                tasks.add(e);
+                storage.save(tasks);
+                showAddedTaskBox(e);
+                return;
             }
-            Event t = new Event(desc, at, null);
-            tasks.add(t);
-            storage.save(tasks);
-            showAddedTaskBox(t);
-            return;
+        } catch (DateTimeParseException ex) {
+            throw new LeoException("Invalid date format. Use d/M/yyyy HHmm or yyyy-MM-dd HHmm.");
         }
-        throw new LeoException("Usage: event <description> /from <start> /to <end>");
+        throw new LeoException("Usage: event <desc> /from <date-time> /to <date-time>");
     }
 
     private void showAddedTaskBox(Task t) {
