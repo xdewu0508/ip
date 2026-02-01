@@ -38,10 +38,42 @@ public class Leo {
                 continue;
             }
 
-            if (taskCount < MAX_TASKS) {
-                tasks[taskCount] = new Task(input);
-                printAdded(tasks[taskCount]);
+            if (input.startsWith("todo ")) {
+                String desc = input.substring(5).trim();
+                tasks[taskCount] = new Todo(desc);
                 taskCount++;
+                printAddedTask(tasks[taskCount - 1], taskCount);
+                continue;
+            }
+
+            if (input.startsWith("deadline ")) {
+                String rest = input.substring(9).trim();
+                int byPos = rest.indexOf("/by");
+                String desc = rest.substring(0, byPos).trim();
+                String by = rest.substring(byPos + 3).trim();
+                tasks[taskCount] = new Deadline(desc, by);
+                taskCount++;
+                printAddedTask(tasks[taskCount - 1], taskCount);
+                continue;
+            }
+
+            if (input.startsWith("event ")) {
+                String rest = input.substring(6).trim();
+                int fromPos = rest.indexOf("/from");
+                int toPos = rest.indexOf("/to");
+                String desc = rest.substring(0, fromPos).trim();
+                String from = rest.substring(fromPos + 5, toPos).trim();
+                String to = rest.substring(toPos + 3).trim();
+                tasks[taskCount] = new Event(desc, from, to);
+                taskCount++;
+                printAddedTask(tasks[taskCount - 1], taskCount);
+                continue;
+            }
+
+            if (taskCount < MAX_TASKS) {
+                tasks[taskCount] = new Todo(input);
+                taskCount++;
+                printAddedTask(tasks[taskCount - 1], taskCount);
             } else {
                 printBox("Too many tasks. I can only store up to " + MAX_TASKS + " tasks. ");
             }
@@ -70,9 +102,11 @@ public class Leo {
         printLine();
     }
 
-    private static void printAdded(Task task) {
+    private static void printAddedTask(Task task, int taskCount) {
         printLine();
-        System.out.println("added: " + task);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + task);
+        System.out.println("Now you have " + taskCount + " tasks in the list.");
         printLine();
     }
 
