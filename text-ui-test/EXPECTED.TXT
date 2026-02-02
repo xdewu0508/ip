@@ -14,22 +14,31 @@ Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [E][ ] meeting (from: Mon to: Tue)
+  [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Nice! I've marked this task as done:
-  [D][X] return book (by: Sunday)
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Sunday)
+3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
 ____________________________________________________________
 ____________________________________________________________
-OK, I've unmarked this task as not done yet:
+Noted. I've removed this task:
   [D][ ] return book (by: Sunday)
+Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
-1. [T][ ] read book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] meeting (from: Mon to: Tue)
+1.[T][ ] read book
+2.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Please give a valid task number to delete.
+____________________________________________________________
+____________________________________________________________
+Not a valid command. Please use one of the following commands:
+todo, deadline, event, list, mark, unmark, delete, bye
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!
