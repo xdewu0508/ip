@@ -7,7 +7,16 @@ public class Leo {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+
+        Storage storage = new Storage("data/leo.txt");
+        ArrayList<Task> tasks;
+
+        try {
+            tasks = storage.load();
+        } catch (LeoException e) {
+            tasks = new ArrayList<>();
+            printError("Save file problem. Starting with an empty list.\n" + e.getMessage());
+        }
 
         printGreeting();
 
@@ -20,14 +29,14 @@ public class Leo {
             }
 
             try {
-                handleCommand(input, tasks);
+                handleCommand(input, tasks, storage);
             } catch (LeoException e) {
                 printError(e.getMessage());
             }
         }
     }
 
-    private static void handleCommand(String input, ArrayList<Task> tasks) throws LeoException {
+    private static void handleCommand(String input, ArrayList<Task> tasks, Storage storage) throws LeoException {
         if (input.equals("list")) {
             printList(tasks);
             return;
@@ -37,7 +46,8 @@ public class Leo {
             int index = parseIndex(input, "mark");
             ensureIndexValid(index, tasks.size(), "mark");
             tasks.get(index).markAsDone();
-            printMarked(tasks.get(index));
+            storage.save(tasks);
+            printMarkedTask(tasks.get(index));
             return;
         }
 
@@ -45,7 +55,8 @@ public class Leo {
             int index = parseIndex(input, "unmark");
             ensureIndexValid(index, tasks.size(), "unmark");
             tasks.get(index).markAsNotDone();
-            printUnmarked(tasks.get(index));
+            storage.save(tasks);
+            printUnmarkedTask(tasks.get(index));
             return;
         }
 
@@ -53,7 +64,8 @@ public class Leo {
             int index = parseIndex(input, "delete");
             ensureIndexValid(index, tasks.size(), "delete");
             Task removed = tasks.remove(index);
-            printDeleted(removed, tasks.size());
+            storage.save(tasks);
+            printDeletedTask(removed, tasks.size());
             return;
         }
 
@@ -65,6 +77,7 @@ public class Leo {
             ensureCapacity(tasks.size());
             Task t = new Todo(desc);
             tasks.add(t);
+            storage.save(tasks);
             printAddedTask(t, tasks.size());
             return;
         }
@@ -88,6 +101,7 @@ public class Leo {
             ensureCapacity(tasks.size());
             Task d = new Deadline(desc, by);
             tasks.add(d);
+            storage.save(tasks);
             printAddedTask(d, tasks.size());
             return;
         }
@@ -114,6 +128,7 @@ public class Leo {
             ensureCapacity(tasks.size());
             Task e = new Event(desc, from, to);
             tasks.add(e);
+            storage.save(tasks);
             printAddedTask(e, tasks.size());
             return;
         }
@@ -183,7 +198,7 @@ public class Leo {
         printLine();
     }
 
-    private static void printDeleted(Task task, int taskCount) {
+    private static void printDeletedTask(Task task, int taskCount) {
         printLine();
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + task);
@@ -191,14 +206,14 @@ public class Leo {
         printLine();
     }
 
-    private static void printMarked(Task task) {
+    private static void printMarkedTask(Task task) {
         printLine();
         System.out.println("Nice! I've marked this task as done:");
         System.out.println("  " + task);
         printLine();
     }
 
-    private static void printUnmarked(Task task) {
+    private static void printUnmarkedTask(Task task) {
         printLine();
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + task);
@@ -207,7 +222,10 @@ public class Leo {
 
     private static void printError(String message) {
         printLine();
-        System.out.println(message);
+        String[] lines = message.split("\\R");
+        for (String line : lines) {
+            System.out.println(line);
+        }
         printLine();
     }
 }
