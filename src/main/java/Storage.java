@@ -63,60 +63,53 @@ public class Storage {
 
     private String serializeTask(Task t) {
         String done = t.isDone ? "1" : "0";
+        switch (t.type) {
+            case TODO:
+                return "T | " + done + " | " + t.description;
 
-        if (t instanceof Todo) {
-            return "T | " + done + " | " + t.description;
-        }
-        if (t instanceof Deadline d) {
-            return "D | " + done + " | " + t.description + " | " + d.by;
-        }
-        if (t instanceof Event e) {
-            return "E | " + done + " | " + t.description + " | " + e.from + " | " + e.to;
-        }
+            case DEADLINE:
+                Deadline d = (Deadline) t;
+                return "D | " + done + " | "
+                        + d.description + " | "
+                        + DateTimeUtil.toStoredString(d.by);
 
-        // fallback (should not happen in your current app)
-        return "T | " + done + " | " + t.description;
+            case EVENT:
+                Event e = (Event) t;
+                return "E | " + done + " | "
+                        + e.description + " | "
+                        + DateTimeUtil.toStoredString(e.from)
+                        + " | "
+                        + DateTimeUtil.toStoredString(e.to);
+
+            default:
+                return "";
+        }
     }
 
-    private Task parseLine(String line) {
-        // split around | with optional spaces
+
+    private Task parseLine(String line) throws LeoException {
         String[] parts = line.split("\\s*\\|\\s*");
         if (parts.length < 3) {
             return null;
         }
-
-        String type = parts[0];
-        String doneStr = parts[1];
+        String typeCode = parts[0];
+        boolean isDone = parts[1].equals("1");
         String desc = parts[2];
-
-        boolean isDone;
-        if (doneStr.equals("1")) {
-            isDone = true;
-        } else if (doneStr.equals("0")) {
-            isDone = false;
-        } else {
-            return null;
-        }
-
         Task task;
-        switch (type) {
+        switch (typeCode) {
             case "T":
-                if (parts.length != 3) {
-                    return null;
-                }
                 task = new Todo(desc);
                 break;
             case "D":
-                if (parts.length != 4) {
-                    return null;
-                }
-                task = new Deadline(desc, parts[3]);
+                if (parts.length != 4) return null;
+                task = new Deadline(desc,
+                        DateTimeUtil.parseStored(parts[3]));
                 break;
             case "E":
-                if (parts.length != 5) {
-                    return null;
-                }
-                task = new Event(desc, parts[3], parts[4]);
+                if (parts.length != 5) return null;
+                task = new Event(desc,
+                        DateTimeUtil.parseStored(parts[3]),
+                        DateTimeUtil.parseStored(parts[4]));
                 break;
             default:
                 return null;

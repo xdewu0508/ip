@@ -99,7 +99,8 @@ public class Leo {
             }
 
             ensureCapacity(tasks.size());
-            Task d = new Deadline(desc, by);
+            java.time.LocalDateTime byDt = DateTimeUtil.parseDateTime(by);
+            Task d = new Deadline(desc, byDt);
             tasks.add(d);
             storage.save(tasks);
             printAddedTask(d, tasks.size());
@@ -126,7 +127,12 @@ public class Leo {
             }
 
             ensureCapacity(tasks.size());
-            Task e = new Event(desc, from, to);
+            java.time.LocalDateTime fromDt = DateTimeUtil.parseDateTime(from);
+            java.time.LocalDateTime toDt = DateTimeUtil.parseDateTime(to);
+            if (toDt.isBefore(fromDt)) {
+                throw new LeoException("Event end time cannot be before start time.");
+            }
+            Task e = new Event(desc, fromDt, toDt);
             tasks.add(e);
             storage.save(tasks);
             printAddedTask(e, tasks.size());
