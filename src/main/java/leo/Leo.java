@@ -1,3 +1,12 @@
+package leo;
+
+import leo.exception.LeoException;
+import leo.ui.Ui;
+import leo.command.Command;
+import leo.command.Parser;
+import leo.storage.Storage;
+import leo.task.TaskList;
+
 public class Leo {
     private Ui ui;
     private Parser parser;

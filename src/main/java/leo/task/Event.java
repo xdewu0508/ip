@@ -1,4 +1,7 @@
+package leo.task;
+
 import java.time.LocalDateTime;
+import leo.util.DateTimeUtil;
 
 public class Event extends Task {
     protected LocalDateTime from;
@@ -8,6 +11,14 @@ public class Event extends Task {
         super(description, TaskType.EVENT);
         this.from = from;
         this.to = to;
+    }
+
+    public LocalDateTime getFrom() {
+        return from;
+    }
+
+    public LocalDateTime getTo() {
+        return to;
     }
 
     @Override

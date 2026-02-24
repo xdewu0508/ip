@@ -1,4 +1,7 @@
+package leo.task;
+
 import java.time.LocalDateTime;
+import leo.util.DateTimeUtil;
 
 public class Deadline extends Task {
     protected LocalDateTime by;
@@ -6,6 +9,10 @@ public class Deadline extends Task {
     public Deadline(String description, LocalDateTime by) {
         super(description, TaskType.DEADLINE);
         this.by = by;
+    }
+
+    public LocalDateTime getBy() {
+        return by;
     }
 
     @Override

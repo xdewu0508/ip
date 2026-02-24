@@ -1,4 +1,12 @@
+package leo.command;
+
 import java.time.LocalDateTime;
+import leo.exception.LeoException;
+import leo.storage.Storage;
+import leo.task.Task;
+import leo.task.TaskList;
+import leo.task.Deadline;
+import leo.ui.Ui;
 
 public class AddDeadlineCommand extends Command {
     private final String description;

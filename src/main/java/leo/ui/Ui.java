@@ -1,5 +1,9 @@
+package leo.ui;
+
 import java.util.Scanner;
 import java.util.ArrayList;
+import leo.task.Task;
+import leo.task.TaskList;
 
 public class Ui {
     private static final String LINE = "____________________________________________________________";

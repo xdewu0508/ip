@@ -1,3 +1,5 @@
+package leo.storage;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -5,6 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import leo.exception.LeoException;
+import leo.task.Task;
+import leo.task.TaskList;
+import leo.task.Todo;
+import leo.task.Deadline;
+import leo.task.Event;
+import leo.util.DateTimeUtil;
 
 public class Storage {
     private final Path filePath;
@@ -59,24 +68,24 @@ public class Storage {
     }
 
     private String serializeTask(Task t) {
-        String done = t.isDone ? "1" : "0";
-        switch (t.type) {
+        String done = t.isDone() ? "1" : "0";
+        switch (t.getType()) {
             case TODO:
-                return "T | " + done + " | " + t.description;
+                return "T | " + done + " | " + t.getDescription();
 
             case DEADLINE:
                 Deadline d = (Deadline) t;
                 return "D | " + done + " | "
-                        + d.description + " | "
-                        + DateTimeUtil.toStoredString(d.by);
+                        + d.getDescription() + " | "
+                        + DateTimeUtil.toStoredString(d.getBy());
 
             case EVENT:
                 Event e = (Event) t;
                 return "E | " + done + " | "
-                        + e.description + " | "
-                        + DateTimeUtil.toStoredString(e.from)
+                        + e.getDescription() + " | "
+                        + DateTimeUtil.toStoredString(e.getFrom())
                         + " | "
-                        + DateTimeUtil.toStoredString(e.to);
+                        + DateTimeUtil.toStoredString(e.getTo());
 
             default:
                 return "";
@@ -117,4 +126,6 @@ public class Storage {
         }
         return task;
     }
+
+
 }

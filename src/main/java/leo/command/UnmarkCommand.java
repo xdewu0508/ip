@@ -1,16 +1,23 @@
-public class MarkCommand extends Command {
+package leo.command;
+
+import leo.exception.LeoException;
+import leo.storage.Storage;
+import leo.task.TaskList;
+import leo.ui.Ui;
+
+public class UnmarkCommand extends Command {
     private final int index;
 
-    public MarkCommand(int index) {
+    public UnmarkCommand(int index) {
         this.index = index;
     }
 
     @Override
     public void execute(TaskList tasks, Storage storage, Ui ui) throws LeoException {
-        validateIndex(index, tasks.size(), "mark");
-        tasks.markAsDone(index);
+        validateIndex(index, tasks.size(), "unmark");
+        tasks.markAsNotDone(index);
         storage.save(tasks);
-        ui.printMarkedTask(tasks.get(index));
+        ui.printUnmarkedTask(tasks.get(index));
     }
 
     private void validateIndex(int index, int taskCount, String commandWord) throws LeoException {

@@ -1,3 +1,5 @@
+package leo.task;
+
 public class Task {
     protected String description;
     protected boolean isDone;
@@ -19,6 +21,22 @@ public class Task {
 
     public String getStatusIcon() {
         return isDone ? "X" : " ";
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public TaskType getType() {
+        return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

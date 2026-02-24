@@ -1,3 +1,11 @@
+package leo.command;
+
+import leo.exception.LeoException;
+import leo.storage.Storage;
+import leo.task.Task;
+import leo.task.TaskList;
+import leo.ui.Ui;
+
 public class DeleteCommand extends Command {
     private final int index;
 

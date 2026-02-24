@@ -1,3 +1,5 @@
+package leo.task;
+
 public enum TaskType {
     TODO("T"),
     DEADLINE("D"),

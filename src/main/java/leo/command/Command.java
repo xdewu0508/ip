@@ -1,3 +1,10 @@
+package leo.command;
+
+import leo.exception.LeoException;
+import leo.task.TaskList;
+import leo.storage.Storage;
+import leo.ui.Ui;
+
 public abstract class Command {
     /**
      * Executes the command.
