@@ -1,9 +1,19 @@
 todo read book
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
+deadline return book /by 2025-12-31
+event project meeting /from 2025-10-01 1400 /to 2025-10-01 1600
 list
-delete 2
+mark 1
+unmark 1
+delete 3
 list
-delete 99
-blah
+invalidcommand
+todo
+deadline homework /by
+event party /from 2025-12-31 2000 /to 2025-12-30 1800
+mark 100
+delete abc
+mark 1
+delete 1
+delete 1
+delete 1
 bye

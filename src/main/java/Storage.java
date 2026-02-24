@@ -13,11 +13,11 @@ public class Storage {
         this.filePath = Paths.get(relativePath);
     }
 
-    public ArrayList<Task> load() throws LeoException {
+    public TaskList load() throws LeoException {
         ArrayList<Task> tasks = new ArrayList<>();
 
         if (!Files.exists(filePath)) {
-            return tasks; // no file yet
+            return new TaskList(tasks);
         }
 
         List<String> lines;
@@ -37,24 +37,21 @@ public class Storage {
             if (parsed != null) {
                 tasks.add(parsed);
             }
-            // corrupted lines are ignored (stretch: tolerant load)
         }
-
-        return tasks;
+        return new TaskList(tasks);
     }
 
-    public void save(ArrayList<Task> tasks) throws LeoException {
+    public void save(TaskList tasks) throws LeoException {
         try {
             Path parent = filePath.getParent();
             if (parent != null) {
-                Files.createDirectories(parent); // create ./data if missing
+                Files.createDirectories(parent);
             }
-
             List<String> lines = new ArrayList<>();
-            for (Task t : tasks) {
+            ArrayList<Task> taskList = tasks.getAll();
+            for (Task t : taskList) {
                 lines.add(serializeTask(t));
             }
-
             Files.write(filePath, lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new LeoException("Cannot write save file: " + filePath);
