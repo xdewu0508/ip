@@ -17,6 +17,9 @@ public class Task {
      * @param type the type of the task (TODO, DEADLINE, or EVENT)
      */
     public Task(String description, TaskType type) {
+        assert description != null : "Task description cannot be null";
+        assert !description.trim().isEmpty() : "Task description cannot be empty";
+        assert type != null : "Task type cannot be null";
         this.description = description;
         this.isDone = false;
         this.type = type;
@@ -78,6 +81,8 @@ public class Task {
      * @param description the new description
      */
     public void setDescription(String description) {
+        assert description != null : "Task description cannot be null";
+        assert !description.trim().isEmpty() : "Task description cannot be empty";
         this.description = description;
     }
 
