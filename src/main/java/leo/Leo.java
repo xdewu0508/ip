@@ -1,11 +1,11 @@
 package leo;
 
-import leo.exception.LeoException;
-import leo.ui.Ui;
 import leo.command.Command;
 import leo.command.Parser;
+import leo.exception.LeoException;
 import leo.storage.Storage;
 import leo.task.TaskList;
+import leo.ui.Ui;
 
 /**
  * Leo is a task management chatbot that helps users manage their tasks.
