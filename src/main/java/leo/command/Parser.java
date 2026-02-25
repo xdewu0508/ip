@@ -66,8 +66,8 @@ public class Parser {
             return new ExitCommand();
 
         default:
-            throw new LeoException("Not a valid command. Please use one of the following commands:\n" +
-                    "todo, deadline, event, list, mark, unmark, delete, find, bye");
+            throw new LeoException("Not a valid command. Please use one of the following commands:\n"
+                    + "todo, deadline, event, list, mark, unmark, delete, find, bye");
         }
     }
 
