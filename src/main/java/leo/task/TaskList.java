@@ -32,6 +32,7 @@ public class TaskList {
      * @param task the task to add
      */
     public void add(Task task) {
+        assert task != null : "Task cannot be null";
         tasks.add(task);
     }
 
@@ -43,6 +44,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if the index is out of range
      */
     public Task get(int index) {
+        assert index >= 0 : "Index must be non-negative: " + index;
         return tasks.get(index);
     }
 
@@ -54,6 +56,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if the index is out of range
      */
     public Task remove(int index) {
+        assert index >= 0 : "Index must be non-negative: " + index;
         return tasks.remove(index);
     }
 
@@ -83,6 +86,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if the index is out of range
      */
     public void markAsDone(int index) {
+        assert index >= 0 : "Index must be non-negative: " + index;
         tasks.get(index).markAsDone();
     }
 
@@ -93,6 +97,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if the index is out of range
      */
     public void markAsNotDone(int index) {
+        assert index >= 0 : "Index must be non-negative: " + index;
         tasks.get(index).markAsNotDone();
     }
 
