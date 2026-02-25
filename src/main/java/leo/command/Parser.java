@@ -59,12 +59,15 @@ public class Parser {
         case "event":
             return parseEventCommand(trimmedInput);
 
+        case "find":
+            return parseFindCommand(trimmedInput);
+
         case "bye":
             return new ExitCommand();
 
         default:
             throw new LeoException("Not a valid command. Please use one of the following commands:\n" +
-                    "todo, deadline, event, list, mark, unmark, delete, bye");
+                    "todo, deadline, event, list, mark, unmark, delete, find, bye");
         }
     }
 
@@ -145,6 +148,25 @@ public class Parser {
         LocalDateTime from = DateTimeUtil.parseDateTime(parts[1]);
         LocalDateTime to = DateTimeUtil.parseDateTime(parts[2]);
         return new AddEventCommand(desc, from, to);
+    }
+
+    /**
+     * Parses the find command input and returns a FindCommand.
+     *
+     * @param input the full find command string
+     * @return a FindCommand with the parsed search keyword
+     * @throws LeoException if the keyword is missing
+     */
+    private Command parseFindCommand(String input) throws LeoException {
+        String[] parts = input.split("\\s+", 2);
+        if (parts.length < 2) {
+            throw new LeoException("Usage: find <keyword>");
+        }
+        String keyword = parts[1].trim();
+        if (keyword.isEmpty()) {
+            throw new LeoException("Usage: find <keyword>");
+        }
+        return new FindCommand(keyword);
     }
 
     /**

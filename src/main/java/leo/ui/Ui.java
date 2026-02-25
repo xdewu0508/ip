@@ -137,4 +137,32 @@ public class Ui {
     public String readCommand() {
         return scanner.nextLine().trim();
     }
+
+    /**
+     * Prints the results of a find command.
+     * Displays all tasks containing the keyword in their description.
+     *
+     * @param keyword the keyword that was searched
+     * @param tasks the task list to search
+     * @param searchKeyword the keyword to match against task descriptions
+     */
+    public void printFindResults(String keyword, TaskList tasks, String searchKeyword) {
+        printLine();
+        System.out.println("Here are the matching tasks in your list:");
+
+        ArrayList<Task> allTasks = tasks.getAll();
+        int matchCount = 0;
+        for (int i = 0; i < allTasks.size(); i++) {
+            Task task = allTasks.get(i);
+            if (task.getDescription().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                matchCount++;
+                System.out.println((matchCount) + "." + task);
+            }
+        }
+
+        if (matchCount == 0) {
+            System.out.println("No tasks found containing \"" + keyword + "\".");
+        }
+        printLine();
+    }
 }
