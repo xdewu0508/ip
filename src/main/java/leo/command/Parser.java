@@ -1,6 +1,7 @@
 package leo.command;
 
 import java.time.LocalDateTime;
+
 import leo.exception.LeoException;
 import leo.task.TaskList;
 import leo.util.DateTimeUtil;
@@ -15,7 +16,7 @@ public class Parser {
      */
     public Command parse(String input) throws LeoException {
         String trimmedInput = input.trim();
-        
+
         if (trimmedInput.isEmpty()) {
             throw new LeoException("Input cannot be empty.");
         }
@@ -24,33 +25,33 @@ public class Parser {
         String commandWord = parts[0].toLowerCase();
 
         switch (commandWord) {
-            case "list":
-                return new ListCommand();
+        case "list":
+            return new ListCommand();
 
-            case "mark":
-                return parseMarkCommand(trimmedInput);
+        case "mark":
+            return parseMarkCommand(trimmedInput);
 
-            case "unmark":
-                return parseUnmarkCommand(trimmedInput);
+        case "unmark":
+            return parseUnmarkCommand(trimmedInput);
 
-            case "delete":
-                return parseDeleteCommand(trimmedInput);
+        case "delete":
+            return parseDeleteCommand(trimmedInput);
 
-            case "todo":
-                return parseTodoCommand(trimmedInput);
+        case "todo":
+            return parseTodoCommand(trimmedInput);
 
-            case "deadline":
-                return parseDeadlineCommand(trimmedInput);
+        case "deadline":
+            return parseDeadlineCommand(trimmedInput);
 
-            case "event":
-                return parseEventCommand(trimmedInput);
+        case "event":
+            return parseEventCommand(trimmedInput);
 
-            case "bye":
-                return new ExitCommand();
+        case "bye":
+            return new ExitCommand();
 
-            default:
-                throw new LeoException("Not a valid command. Please use one of the following commands:\n" +
-                        "todo, deadline, event, list, mark, unmark, delete, bye");
+        default:
+            throw new LeoException("Not a valid command. Please use one of the following commands:\n" +
+                    "todo, deadline, event, list, mark, unmark, delete, bye");
         }
     }
 

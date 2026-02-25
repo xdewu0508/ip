@@ -7,12 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
 import leo.exception.LeoException;
+import leo.task.Deadline;
+import leo.task.Event;
 import leo.task.Task;
 import leo.task.TaskList;
 import leo.task.Todo;
-import leo.task.Deadline;
-import leo.task.Event;
 import leo.util.DateTimeUtil;
 
 public class Storage {
@@ -70,25 +71,25 @@ public class Storage {
     private String serializeTask(Task t) {
         String done = t.isDone() ? "1" : "0";
         switch (t.getType()) {
-            case TODO:
-                return "T | " + done + " | " + t.getDescription();
+        case TODO:
+            return "T | " + done + " | " + t.getDescription();
 
-            case DEADLINE:
-                Deadline d = (Deadline) t;
-                return "D | " + done + " | "
-                        + d.getDescription() + " | "
-                        + DateTimeUtil.toStoredString(d.getBy());
+        case DEADLINE:
+            Deadline d = (Deadline) t;
+            return "D | " + done + " | "
+                    + d.getDescription() + " | "
+                    + DateTimeUtil.toStoredString(d.getBy());
 
-            case EVENT:
-                Event e = (Event) t;
-                return "E | " + done + " | "
-                        + e.getDescription() + " | "
-                        + DateTimeUtil.toStoredString(e.getFrom())
-                        + " | "
-                        + DateTimeUtil.toStoredString(e.getTo());
+        case EVENT:
+            Event e = (Event) t;
+            return "E | " + done + " | "
+                    + e.getDescription() + " | "
+                    + DateTimeUtil.toStoredString(e.getFrom())
+                    + " | "
+                    + DateTimeUtil.toStoredString(e.getTo());
 
-            default:
-                return "";
+        default:
+            return "";
         }
     }
 
@@ -103,22 +104,26 @@ public class Storage {
         String desc = parts[2];
         Task task;
         switch (typeCode) {
-            case "T":
-                task = new Todo(desc);
-                break;
-            case "D":
-                if (parts.length != 4) return null;
-                task = new Deadline(desc,
-                        DateTimeUtil.parseStored(parts[3]));
-                break;
-            case "E":
-                if (parts.length != 5) return null;
-                task = new Event(desc,
-                        DateTimeUtil.parseStored(parts[3]),
-                        DateTimeUtil.parseStored(parts[4]));
-                break;
-            default:
+        case "T":
+            task = new Todo(desc);
+            break;
+        case "D":
+            if (parts.length != 4) {
                 return null;
+            }
+            task = new Deadline(desc,
+                    DateTimeUtil.parseStored(parts[3]));
+            break;
+        case "E":
+            if (parts.length != 5) {
+                return null;
+            }
+            task = new Event(desc,
+                    DateTimeUtil.parseStored(parts[3]),
+                    DateTimeUtil.parseStored(parts[4]));
+            break;
+        default:
+            return null;
         }
 
         if (isDone) {
@@ -126,6 +131,4 @@ public class Storage {
         }
         return task;
     }
-
-
 }
