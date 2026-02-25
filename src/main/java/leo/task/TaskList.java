@@ -1,6 +1,7 @@
 package leo.task;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * TaskList manages a collection of Task objects.
@@ -103,5 +104,43 @@ public class TaskList {
      */
     public boolean isEmpty() {
         return tasks.isEmpty();
+    }
+
+    /**
+     * Returns all done tasks using Java Streams.
+     * Uses method reference for filtering.
+     *
+     * @return an ArrayList containing only done tasks
+     */
+    public ArrayList<Task> getDoneTasks() {
+        return tasks.stream()
+                .filter(Task::isDone)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Returns all not done tasks using Java Streams.
+     * Uses lambda expression for filtering.
+     *
+     * @return an ArrayList containing only not done tasks
+     */
+    public ArrayList<Task> getNotDoneTasks() {
+        return tasks.stream()
+                .filter(task -> !task.isDone())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Returns tasks matching the given keyword using Java Streams.
+     * Search is case-insensitive.
+     *
+     * @param keyword the keyword to search for
+     * @return an ArrayList containing matching tasks
+     */
+    public ArrayList<Task> findTasks(String keyword) {
+        String lowerKeyword = keyword.toLowerCase();
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
