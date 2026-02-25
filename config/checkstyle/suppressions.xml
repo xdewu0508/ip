@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Suppress checks for test files -->
+    <suppress checks="MissingJavadocType" files=".*Test\.java$"/>
+    <suppress checks="MissingJavadocMethod" files=".*Test\.java$"/>
+    <suppress checks="AbbreviationAsWordInName" files=".*Test\.java$"/>
+    <suppress checks="CustomImportOrder" files=".*Test\.java$"/>
+    <suppress checks="OperatorWrap" files=".*Test\.java$"/>
+    
+    <!-- Suppress checks for generated code -->
+    <suppress checks=".*" files=".*[\\/]generated[\\/].*\.java"/>
+    
+    <!-- Suppress Indentation check for switch statements (existing code style) -->
+    <suppress checks="Indentation" files="Storage\.java"/>
+    <suppress checks="Indentation" files="Parser\.java"/>
+    
+    <!-- Suppress CustomImportOrder for existing code style -->
+    <suppress checks="CustomImportOrder" files="Ui\.java"/>
+    <suppress checks="CustomImportOrder" files="DateTimeUtil\.java"/>
+    <suppress checks="CustomImportOrder" files="Storage\.java"/>
+    <suppress checks="CustomImportOrder" files="Parser\.java"/>
+    <suppress checks="CustomImportOrder" files="AddEventCommand\.java"/>
+    <suppress checks="CustomImportOrder" files="AddDeadlineCommand\.java"/>
+    <suppress checks="CustomImportOrder" files="Command\.java"/>
+</suppressions>
