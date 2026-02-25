@@ -49,6 +49,17 @@ public class Ui {
     }
 
     /**
+     * Prints an undo confirmation message.
+     *
+     * @param message the undo result message
+     */
+    public void printUndo(String message) {
+        printLine();
+        System.out.println(message);
+        printLine();
+    }
+
+    /**
      * Prints all tasks in the given task list.
      *
      * @param tasks the list of tasks to display

@@ -13,7 +13,7 @@ import leo.ui.Ui;
  * AddEventCommand adds a new Event task to the task list.
  * An Event is a task with a description and a time range (start and end).
  */
-public class AddEventCommand extends Command {
+public class AddEventCommand extends Command implements UndoableAddCommand {
     private final String description;
     private final LocalDateTime from;
     private final LocalDateTime to;

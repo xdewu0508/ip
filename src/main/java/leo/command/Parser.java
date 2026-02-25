@@ -3,12 +3,13 @@ package leo.command;
 import java.time.LocalDateTime;
 
 import leo.exception.LeoException;
+import leo.history.CommandHistory;
 import leo.task.TaskList;
 import leo.util.DateTimeUtil;
 
 /**
  * Parser parses user input strings and converts them into appropriate Command objects.
- * It handles all supported commands: list, mark, unmark, delete, todo, deadline, event, and bye.
+ * It handles all supported commands: list, mark, unmark, delete, todo, deadline, event, undo, and bye.
  * The parser validates input format and throws LeoException for invalid commands.
  */
 public class Parser {
@@ -16,10 +17,22 @@ public class Parser {
     private static final int TODO_PREFIX_LENGTH = 4; // Length of "todo"
     private static final int EVENT_PREFIX_LENGTH = 5; // Length of "event"
 
+    private CommandHistory history;
+
     /**
      * Constructs a new Parser instance.
      */
     public Parser() {
+        this.history = new CommandHistory();
+    }
+
+    /**
+     * Returns the command history for undo functionality.
+     *
+     * @return the command history
+     */
+    public CommandHistory getHistory() {
+        return history;
     }
 
     /**
@@ -45,32 +58,47 @@ public class Parser {
             return new ListCommand();
 
         case "mark":
-            return parseMarkCommand(trimmedInput);
+            Command markCmd = parseMarkCommand(trimmedInput);
+            history.addCommand(markCmd);
+            return markCmd;
 
         case "unmark":
-            return parseUnmarkCommand(trimmedInput);
+            Command unmarkCmd = parseUnmarkCommand(trimmedInput);
+            history.addCommand(unmarkCmd);
+            return unmarkCmd;
 
         case "delete":
-            return parseDeleteCommand(trimmedInput);
+            Command deleteCmd = parseDeleteCommand(trimmedInput);
+            history.addCommand(deleteCmd);
+            return deleteCmd;
 
         case "todo":
-            return parseTodoCommand(trimmedInput);
+            Command todoCmd = parseTodoCommand(trimmedInput);
+            history.addCommand(todoCmd);
+            return todoCmd;
 
         case "deadline":
-            return parseDeadlineCommand(trimmedInput);
+            Command deadlineCmd = parseDeadlineCommand(trimmedInput);
+            history.addCommand(deadlineCmd);
+            return deadlineCmd;
 
         case "event":
-            return parseEventCommand(trimmedInput);
+            Command eventCmd = parseEventCommand(trimmedInput);
+            history.addCommand(eventCmd);
+            return eventCmd;
 
         case "find":
             return parseFindCommand(trimmedInput);
+
+        case "undo":
+            return new UndoCommand(history);
 
         case "bye":
             return new ExitCommand();
 
         default:
             throw new LeoException("Not a valid command. Please use one of the following commands:\n"
-                    + "todo, deadline, event, list, mark, unmark, delete, find, bye");
+                    + "todo, deadline, event, list, mark, unmark, delete, find, undo, bye");
         }
     }
 

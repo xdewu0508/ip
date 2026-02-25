@@ -9,7 +9,7 @@ import leo.ui.Ui;
  * UnmarkCommand marks a task as not done.
  * It validates the task index, updates the task status, saves changes, and confirms to the user.
  */
-public class UnmarkCommand extends Command {
+public class UnmarkCommand extends Command implements UndoableUnmarkCommand {
     private final int index;
 
     /**
@@ -53,5 +53,15 @@ public class UnmarkCommand extends Command {
         if (index < 0 || index >= taskCount) {
             throw new LeoException("Please give a valid task number to " + commandWord + ".");
         }
+    }
+
+    /**
+     * Returns the index of the task that was unmarked.
+     *
+     * @return the task index
+     */
+    @Override
+    public int getTaskIndex() {
+        return index;
     }
 }
