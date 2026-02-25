@@ -12,7 +12,7 @@ import leo.task.TaskList;
  * displaying task lists, and reading user commands.
  */
 public class Ui {
-    private static final String LINE = "____________________________________________________________";
+    protected static final String LINE = "____________________________________________________________";
     private Scanner scanner;
 
     /**
