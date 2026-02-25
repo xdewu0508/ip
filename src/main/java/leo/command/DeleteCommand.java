@@ -10,7 +10,7 @@ import leo.ui.Ui;
  * DeleteCommand removes a task from the task list.
  * It validates the task index, removes the task, saves changes, and confirms to the user.
  */
-public class DeleteCommand extends Command {
+public class DeleteCommand extends Command implements UndoableDeleteCommand {
     private final int index;
 
     /**
@@ -54,5 +54,15 @@ public class DeleteCommand extends Command {
         if (index < 0 || index >= taskCount) {
             throw new LeoException("Please give a valid task number to " + commandWord + ".");
         }
+    }
+
+    /**
+     * Returns the index of the task that was deleted.
+     *
+     * @return the task index
+     */
+    @Override
+    public int getTaskIndex() {
+        return index;
     }
 }

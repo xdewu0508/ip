@@ -11,7 +11,7 @@ import leo.ui.Ui;
  * AddTodoCommand adds a new Todo task to the task list.
  * A Todo is a simple task with just a description.
  */
-public class AddTodoCommand extends Command {
+public class AddTodoCommand extends Command implements UndoableAddCommand {
     private final String description;
 
     /**

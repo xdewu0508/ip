@@ -85,6 +85,13 @@ public class GuiUi extends Ui {
     }
 
     @Override
+    public void printUndo(String message) {
+        addDialogBubble(LINE);
+        addDialogBubble("Undo: " + message);
+        addDialogBubble(LINE);
+    }
+
+    @Override
     public void printList(java.util.ArrayList<Task> tasks) {
         addDialogBubble(LINE);
         addDialogBubble("Here are the tasks in your list:");

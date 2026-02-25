@@ -9,7 +9,7 @@ import leo.ui.Ui;
  * MarkCommand marks a task as done.
  * It validates the task index, updates the task status, saves changes, and confirms to the user.
  */
-public class MarkCommand extends Command {
+public class MarkCommand extends Command implements UndoableMarkCommand {
     private final int index;
 
     /**
@@ -53,5 +53,15 @@ public class MarkCommand extends Command {
         if (index < 0 || index >= taskCount) {
             throw new LeoException("Please give a valid task number to " + commandWord + ".");
         }
+    }
+
+    /**
+     * Returns the index of the task that was marked.
+     *
+     * @return the task index
+     */
+    @Override
+    public int getTaskIndex() {
+        return index;
     }
 }

@@ -13,7 +13,7 @@ import leo.ui.Ui;
  * AddDeadlineCommand adds a new Deadline task to the task list.
  * A Deadline is a task with a description and a due date/time.
  */
-public class AddDeadlineCommand extends Command {
+public class AddDeadlineCommand extends Command implements UndoableAddCommand {
     private final String description;
     private final LocalDateTime by;
 
