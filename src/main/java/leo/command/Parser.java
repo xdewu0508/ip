@@ -13,6 +13,9 @@ import leo.util.DateTimeUtil;
  */
 public class Parser {
 
+    private static final int TODO_PREFIX_LENGTH = 4; // Length of "todo"
+    private static final int EVENT_PREFIX_LENGTH = 5; // Length of "event"
+
     /**
      * Constructs a new Parser instance.
      */
@@ -115,7 +118,7 @@ public class Parser {
      * @throws LeoException if the description is missing or empty
      */
     private Command parseTodoCommand(String input) throws LeoException {
-        String desc = parseDescription(input, 4, "todo");
+        String desc = parseDescription(input, TODO_PREFIX_LENGTH, "todo");
         return new AddTodoCommand(desc);
     }
 
@@ -200,7 +203,9 @@ public class Parser {
      * @throws LeoException if the description is empty
      */
     private String parseDescription(String input, int prefixLength, String commandWord) throws LeoException {
-        String desc = input.length() > prefixLength ? input.substring(prefixLength).trim() : "";
+        boolean hasDescription = input.length() > prefixLength;
+        String desc = hasDescription ? input.substring(prefixLength).trim() : "";
+
         if (desc.isEmpty()) {
             throw new LeoException("The description of a " + commandWord + " cannot be empty.");
         }
@@ -244,21 +249,31 @@ public class Parser {
      * @throws LeoException if any part is missing or malformed
      */
     private String[] parseEventInput(String input) throws LeoException {
-        String rest = input.substring(5).trim();
+        String rest = input.substring(EVENT_PREFIX_LENGTH).trim();
+
+        // Guard clause: check description exists
         if (rest.isEmpty()) {
             throw new LeoException("The description of an event cannot be empty.");
         }
 
+        // Find time markers
         int fromPos = rest.indexOf("/from");
         int toPos = rest.indexOf("/to");
-        if (fromPos == -1 || toPos == -1 || toPos < fromPos) {
+
+        // Guard clause: validate format
+        boolean hasInvalidFormat = fromPos == -1 || toPos == -1 || toPos < fromPos;
+        if (hasInvalidFormat) {
             throw new LeoException("Usage: event <description> /from <start> /to <end>");
         }
 
+        // Extract parts
         String desc = rest.substring(0, fromPos).trim();
         String from = rest.substring(fromPos + 5, toPos).trim();
         String to = rest.substring(toPos + 3).trim();
-        if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
+
+        // Guard clause: validate all parts are non-empty
+        boolean hasEmptyPart = desc.isEmpty() || from.isEmpty() || to.isEmpty();
+        if (hasEmptyPart) {
             throw new LeoException("Usage: event <description> /from <start> /to <end>");
         }
 

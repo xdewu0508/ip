@@ -22,6 +22,13 @@ import leo.util.DateTimeUtil;
  * Tasks are stored in a pipe-delimited format with type, done status, description, and optional time fields.
  */
 public class Storage {
+    private static final String TODO_CODE = "T";
+    private static final String DEADLINE_CODE = "D";
+    private static final String EVENT_CODE = "E";
+    private static final String DONE_MARKER = "1";
+    private static final String NOT_DONE_MARKER = "0";
+    private static final String DELIMITER = " | ";
+
     private final Path filePath;
 
     /**
@@ -101,28 +108,47 @@ public class Storage {
      * @return the serialized task string
      */
     private String serializeTask(Task t) {
-        String done = t.isDone() ? "1" : "0";
+        String doneMarker = t.isDone() ? DONE_MARKER : NOT_DONE_MARKER;
         switch (t.getType()) {
         case TODO:
-            return "T | " + done + " | " + t.getDescription();
+            return TODO_CODE + DELIMITER + doneMarker + DELIMITER + t.getDescription();
 
         case DEADLINE:
-            Deadline d = (Deadline) t;
-            return "D | " + done + " | "
-                    + d.getDescription() + " | "
-                    + DateTimeUtil.toStoredString(d.getBy());
+            return serializeDeadline((Deadline) t, doneMarker);
 
         case EVENT:
-            Event e = (Event) t;
-            return "E | " + done + " | "
-                    + e.getDescription() + " | "
-                    + DateTimeUtil.toStoredString(e.getFrom())
-                    + " | "
-                    + DateTimeUtil.toStoredString(e.getTo());
+            return serializeEvent((Event) t, doneMarker);
 
         default:
             return "";
         }
+    }
+
+    /**
+     * Serializes a Deadline task to its string representation.
+     *
+     * @param deadline the deadline task to serialize
+     * @param doneMarker the done status marker ("1" or "0")
+     * @return the serialized deadline string
+     */
+    private String serializeDeadline(Deadline deadline, String doneMarker) {
+        String byTime = DateTimeUtil.toStoredString(deadline.getBy());
+        return DEADLINE_CODE + DELIMITER + doneMarker + DELIMITER
+                + deadline.getDescription() + DELIMITER + byTime;
+    }
+
+    /**
+     * Serializes an Event task to its string representation.
+     *
+     * @param event the event task to serialize
+     * @param doneMarker the done status marker ("1" or "0")
+     * @return the serialized event string
+     */
+    private String serializeEvent(Event event, String doneMarker) {
+        String fromTime = DateTimeUtil.toStoredString(event.getFrom());
+        String toTime = DateTimeUtil.toStoredString(event.getTo());
+        return EVENT_CODE + DELIMITER + doneMarker + DELIMITER
+                + event.getDescription() + DELIMITER + fromTime + DELIMITER + toTime;
     }
 
 
@@ -136,39 +162,80 @@ public class Storage {
      */
     private Task parseLine(String line) throws LeoException {
         String[] parts = line.split("\\s*\\|\\s*");
+
+        // Guard clause: validate minimum parts
         if (parts.length < 3) {
             return null;
         }
-        String typeCode = parts[0];
-        boolean isDone = parts[1].equals("1");
-        String desc = parts[2];
-        Task task;
-        switch (typeCode) {
-        case "T":
-            task = new Todo(desc);
-            break;
-        case "D":
-            if (parts.length != 4) {
-                return null;
-            }
-            task = new Deadline(desc,
-                    DateTimeUtil.parseStored(parts[3]));
-            break;
-        case "E":
-            if (parts.length != 5) {
-                return null;
-            }
-            task = new Event(desc,
-                    DateTimeUtil.parseStored(parts[3]),
-                    DateTimeUtil.parseStored(parts[4]));
-            break;
-        default:
-            return null;
-        }
 
-        if (isDone) {
+        String typeCode = parts[0];
+        boolean isDone = parts[1].equals(DONE_MARKER);
+        String desc = parts[2];
+
+        Task task = parseTaskByType(typeCode, parts, desc);
+
+        if (task != null && isDone) {
             task.markAsDone();
         }
         return task;
+    }
+
+    /**
+     * Parses a task based on its type code.
+     *
+     * @param typeCode the type code (T, D, or E)
+     * @param parts the split line parts
+     * @param desc the task description
+     * @return the parsed task, or null if invalid
+     * @throws LeoException if parsing fails
+     */
+    private Task parseTaskByType(String typeCode, String[] parts, String desc) throws LeoException {
+        switch (typeCode) {
+        case TODO_CODE:
+            return new Todo(desc);
+
+        case DEADLINE_CODE:
+            return parseDeadlineTask(parts, desc);
+
+        case EVENT_CODE:
+            return parseEventTask(parts, desc);
+
+        default:
+            return null;
+        }
+    }
+
+    /**
+     * Parses a Deadline task from stored parts.
+     *
+     * @param parts the split line parts
+     * @param desc the task description
+     * @return the parsed Deadline task, or null if invalid
+     * @throws LeoException if parsing fails
+     */
+    private Task parseDeadlineTask(String[] parts, String desc) throws LeoException {
+        boolean hasCorrectParts = parts.length == 4;
+        if (!hasCorrectParts) {
+            return null;
+        }
+        return new Deadline(desc, DateTimeUtil.parseStored(parts[3]));
+    }
+
+    /**
+     * Parses an Event task from stored parts.
+     *
+     * @param parts the split line parts
+     * @param desc the task description
+     * @return the parsed Event task, or null if invalid
+     * @throws LeoException if parsing fails
+     */
+    private Task parseEventTask(String[] parts, String desc) throws LeoException {
+        boolean hasCorrectParts = parts.length == 5;
+        if (!hasCorrectParts) {
+            return null;
+        }
+        return new Event(desc,
+                DateTimeUtil.parseStored(parts[3]),
+                DateTimeUtil.parseStored(parts[4]));
     }
 }
