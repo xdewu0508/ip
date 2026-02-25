@@ -7,6 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import leo.exception.LeoException;
 
+/**
+ * DateTimeUtil provides utility methods for parsing and formatting dates and times.
+ * It supports multiple input formats for user convenience and ISO format for storage.
+ */
 public class DateTimeUtil {
     private static final DateTimeFormatter OUTPUT_DATE =
             DateTimeFormatter.ofPattern("MMM d yyyy");
@@ -21,10 +25,12 @@ public class DateTimeUtil {
             DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     /**
-     * Accepts:
-     *  - yyyy-MM-dd
-     *  - yyyy-MM-dd HHmm
-     *  - d/M/yyyy HHmm
+     * Parses a date/time string from user input.
+     * Accepts multiple formats: yyyy-MM-dd, yyyy-MM-dd HHmm, or d/M/yyyy HHmm.
+     *
+     * @param raw the raw date/time string to parse
+     * @return the parsed LocalDateTime
+     * @throws LeoException if the format is invalid or empty
      */
     public static LocalDateTime parseDateTime(String raw) throws LeoException {
         String s = raw.trim();
@@ -57,6 +63,13 @@ public class DateTimeUtil {
         throw new LeoException("Invalid date/time format. Try yyyy-MM-dd, yyyy-MM-dd HHmm, or d/M/yyyy HHmm.");
     }
 
+    /**
+     * Formats a LocalDateTime for display to the user.
+     * Uses date-only format for midnight times, otherwise includes time.
+     *
+     * @param dt the LocalDateTime to format
+     * @return the formatted date/time string
+     */
     public static String format(LocalDateTime dt) {
         if (dt.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dt.toLocalDate().format(OUTPUT_DATE);
@@ -65,10 +78,12 @@ public class DateTimeUtil {
     }
 
     /**
-     * Storage helper: parse what we saved.
-     * Accepts:
-     *  - ISO LocalDateTime (e.g., 2019-12-02T18:00)
-     *  - ISO LocalDate (e.g., 2019-12-02)
+     * Parses a date/time string from the storage file.
+     * Accepts ISO format: yyyy-MM-ddTHH:MM or yyyy-MM-dd.
+     *
+     * @param raw the raw date/time string from storage
+     * @return the parsed LocalDateTime
+     * @throws LeoException if the format is corrupted
      */
     public static LocalDateTime parseStored(String raw) throws LeoException {
         String s = raw.trim();
@@ -82,6 +97,12 @@ public class DateTimeUtil {
         }
     }
 
+    /**
+     * Converts a LocalDateTime to its ISO string representation for storage.
+     *
+     * @param dt the LocalDateTime to convert
+     * @return the ISO format string (e.g., "2019-12-02T18:00")
+     */
     public static String toStoredString(LocalDateTime dt) {
         return dt.toString(); // ISO_LOCAL_DATE_TIME, e.g. 2019-12-02T18:00
     }
