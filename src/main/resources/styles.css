@@ -1,54 +1,186 @@
 .root {
     -fx-font-family: "Segoe UI", Arial, sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
+    -fx-background-color: #f0f2f5;
 }
 
 #dialogContainer {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #f0f2f5;
 }
 
 #scrollPane {
-    -fx-background-color: #ffffff;
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
 
 #scrollPane .viewport {
-    -fx-background-color: #ffffff;
+    -fx-background-color: transparent;
+}
+
+#scrollPane .scroll-bar:vertical {
+    -fx-pref-width: 10;
+    -fx-background-color: transparent;
+}
+
+#scrollPane .scroll-bar:vertical .thumb {
+    -fx-background-color: #c1c1c1;
+    -fx-background-radius: 5;
+}
+
+#scrollPane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #a1a1a1;
 }
 
 #dialogBox {
-    -fx-background-color: #ffffff;
-    -fx-padding: 10;
+    -fx-background-color: transparent;
 }
 
-#userInput {
-    -fx-font-size: 14px;
-    -fx-padding: 10;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1 1 1 1;
+.message-container {
+    -fx-spacing: 8;
+    -fx-fill-width: false;
+}
+
+.message-container.left {
+    -fx-alignment: center-left;
+}
+
+.message-container.right {
+    -fx-alignment: center-right;
+}
+
+/* Profile picture styling */
+.profile-picture {
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);
+}
+
+.profile-picture.bot {
+    -fx-background-color: #4CAF50;
+}
+
+.profile-picture.user {
+    -fx-background-color: #2196F3;
+}
+
+.message-wrapper {
+    -fx-max-width: 300px;
+}
+
+.user-message {
+    -fx-background-color: #007bff;
+    -fx-background-radius: 18 18 4 18;
+    -fx-text-fill: white;
+    -fx-padding: 12 16 12 16;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.2), 3, 0, 0, 1);
+}
+
+/* ============================================
+   Bot Messages - White, left-aligned style
+   Asymmetric: Bot messages are distinct
+   ============================================ */
+.bot-message {
     -fx-background-color: #ffffff;
+    -fx-background-radius: 18 18 18 4;
+    -fx-text-fill: #333333;
+    -fx-padding: 12 16 12 16;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+/* ============================================
+   Error Messages - Red, attention-grabbing
+   Highlight errors to catch user attention
+   ============================================ */
+.error-message {
+    -fx-background-color: #ffebee;
+    -fx-background-radius: 8;
+    -fx-text-fill: #c62828;
+    -fx-padding: 12 16 12 16;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-border-color: #ef9a9a;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(198,40,40,0.2), 3, 0, 0, 1);
+}
+
+/* ============================================
+   Undo Messages - Green, success style
+   ============================================ */
+.undo-message {
+    -fx-background-color: #e8f5e9;
+    -fx-background-radius: 8;
+    -fx-text-fill: #2e7d32;
+    -fx-padding: 12 16 12 16;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-border-color: #a5d6a7;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.2), 3, 0, 0, 1);
+}
+
+/* ============================================
+   Input Field - Modern, clean design
+   ============================================ */
+#userInput {
+    -fx-font-size: 13px;
+    -fx-padding: 12 16 12 16;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-prompt-text-fill: #9e9e9e;
 }
 
 #userInput:focused {
     -fx-border-color: #007bff;
+    -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.2), 4, 0, 0, 0);
 }
 
+#userInput:prompt {
+    -fx-text-fill: #9e9e9e;
+}
+
+/* ============================================
+   Send Button - Modern, clickable design
+   ============================================ */
 #sendButton {
     -fx-background-color: #007bff;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
+    -fx-background-radius: 25;
+    -fx-padding: 12 24 12 24;
+    -fx-min-width: 90;
 }
 
 #sendButton:hover {
     -fx-background-color: #0056b3;
+    -fx-effect: dropshadow(gaussian, rgba(0,86,179,0.4), 6, 0, 0, 2);
 }
 
 #sendButton:pressed {
     -fx-background-color: #004085;
+    -fx-effect: none;
 }
 
+#sendButton:disabled {
+    -fx-background-color: #cccccc;
+    -fx-opacity: 0.6;
+}
+
+/* ============================================
+   General Label Styling
+   ============================================ */
 .label {
     -fx-text-fill: #333333;
 }
