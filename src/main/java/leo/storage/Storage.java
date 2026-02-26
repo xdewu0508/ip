@@ -46,7 +46,7 @@ public class Storage {
      * If the file is corrupted, skips invalid lines and continues loading.
      *
      * @return a TaskList containing all loaded tasks
-     * @throws LeoException if the file cannot be read
+     * @throws LeoException if the file cannot be read due to permission issues
      */
     public TaskList load() throws LeoException {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -58,8 +58,12 @@ public class Storage {
         List<String> lines;
         try {
             lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+        } catch (java.nio.file.AccessDeniedException e) {
+            throw new LeoException("Access denied to save file: " + filePath 
+                    + ". Please check file permissions.");
         } catch (IOException e) {
-            throw new LeoException("Cannot read save file: " + filePath);
+            throw new LeoException("Cannot read save file: " + filePath 
+                    + ". The file may be in use or corrupted.");
         }
 
         for (String raw : lines) {
@@ -81,7 +85,7 @@ public class Storage {
      * Creates parent directories if they don't exist.
      *
      * @param tasks the TaskList to save
-     * @throws LeoException if the file cannot be written
+     * @throws LeoException if the file cannot be written due to permission or disk issues
      */
     public void save(TaskList tasks) throws LeoException {
         try {
@@ -95,8 +99,15 @@ public class Storage {
                 lines.add(serializeTask(t));
             }
             Files.write(filePath, lines, StandardCharsets.UTF_8);
+        } catch (java.nio.file.AccessDeniedException e) {
+            throw new LeoException("Access denied to save file: " + filePath 
+                    + ". Please check file permissions.");
+        } catch (java.nio.file.FileSystemException e) {
+            throw new LeoException("Cannot write to save file: " + filePath 
+                    + ". The disk may be full or the file is locked.");
         } catch (IOException e) {
-            throw new LeoException("Cannot write save file: " + filePath);
+            throw new LeoException("Cannot write save file: " + filePath 
+                    + ". Please check if the location is writable.");
         }
     }
 

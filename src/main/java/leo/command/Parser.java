@@ -50,6 +50,11 @@ public class Parser {
             throw new LeoException("Input cannot be empty.");
         }
 
+        // Check for multiple consecutive spaces (except in descriptions)
+        if (trimmedInput.matches("\\S+\\s{2,}\\S+")) {
+            throw new LeoException("Multiple spaces detected. Please use single spaces between command parts.");
+        }
+
         String[] parts = trimmedInput.split("\\s+", 2);
         String commandWord = parts[0].toLowerCase();
 
@@ -207,17 +212,29 @@ public class Parser {
      * @param input the full command string
      * @param commandWord the command word for error messages
      * @return the zero-based task index
-     * @throws LeoException if the index is missing or not a number
+     * @throws LeoException if the index is missing, not a number, or contains invalid characters
      */
     private int parseIndex(String input, String commandWord) throws LeoException {
         String[] parts = input.split("\\s+");
         if (parts.length < 2) {
             throw new LeoException("Usage: " + commandWord + " <task number>");
         }
+        
+        String indexStr = parts[1];
+        
+        // Check for non-numeric characters
+        if (!indexStr.matches("\\d+")) {
+            throw new LeoException("Task number must be a positive integer (e.g., 1, 2, 3).");
+        }
+        
         try {
-            return Integer.parseInt(parts[1]) - 1;
+            int index = Integer.parseInt(indexStr);
+            if (index <= 0) {
+                throw new LeoException("Task number must be a positive integer (e.g., 1, 2, 3).");
+            }
+            return index - 1;
         } catch (NumberFormatException e) {
-            throw new LeoException("Usage: " + commandWord + " <task number>");
+            throw new LeoException("Task number must be a positive integer (e.g., 1, 2, 3).");
         }
     }
 

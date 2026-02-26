@@ -208,7 +208,7 @@ public class ParserTest {
         LeoException exception = assertThrows(LeoException.class, () -> {
             parser.parse("mark abc");
         });
-        assertTrue(exception.getMessage().contains("<task number>"));
+        assertTrue(exception.getMessage().contains("positive integer"));
     }
 
     @Test

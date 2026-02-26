@@ -34,17 +34,17 @@ public class AddEventCommand extends Command implements UndoableAddCommand {
     /**
      * Executes the add event command by creating a new Event task,
      * adding it to the list, saving changes, and displaying confirmation.
-     * Validates that the end time is not before the start time.
+     * Validates that the end time is not before or equal to the start time.
      *
      * @param tasks the task list to add the task to
      * @param storage the storage for saving changes
      * @param ui the UI for displaying confirmation
-     * @throws LeoException if the end time is before start time, or if adding fails
+     * @throws LeoException if the end time is before or equal to start time, or if adding fails
      */
     @Override
     public void execute(TaskList tasks, Storage storage, Ui ui) throws LeoException {
-        if (to.isBefore(from)) {
-            throw new LeoException("Event end time cannot be before start time.");
+        if (to.isBefore(from) || to.isEqual(from)) {
+            throw new LeoException("Event end time must be after start time.");
         }
         Task e = new Event(description, from, to);
         tasks.add(e);

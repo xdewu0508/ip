@@ -3,6 +3,8 @@ package leo.task;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import leo.exception.LeoException;
+
 /**
  * TaskList manages a collection of Task objects.
  * It provides methods for adding, removing, accessing, and manipulating tasks.
@@ -29,12 +31,71 @@ public class TaskList {
 
     /**
      * Adds a task to the task list.
+     * Checks for duplicate tasks and throws LeoException if a duplicate is found.
      *
      * @param task the task to add
+     * @throws LeoException if the task already exists in the list
      */
-    public void add(Task task) {
+    public void add(Task task) throws LeoException {
         assert task != null : "Task cannot be null";
+        if (containsDuplicate(task)) {
+            throw new LeoException("A similar task already exists in the list.");
+        }
         tasks.add(task);
+    }
+
+    /**
+     * Checks if the task list contains a duplicate of the given task.
+     * Two tasks are considered duplicates if they have the same type, description,
+     * and time fields (if applicable).
+     *
+     * @param newTask the task to check for duplicates
+     * @return true if a duplicate exists, false otherwise
+     */
+    private boolean containsDuplicate(Task newTask) {
+        for (Task existing : tasks) {
+            if (isDuplicate(existing, newTask)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if two tasks are duplicates of each other.
+     *
+     * @param existing the existing task
+     * @param newTask the new task to compare
+     * @return true if the tasks are duplicates, false otherwise
+     */
+    private boolean isDuplicate(Task existing, Task newTask) {
+        // Different types cannot be duplicates
+        if (existing.getType() != newTask.getType()) {
+            return false;
+        }
+
+        // Compare descriptions (case-insensitive)
+        if (!existing.getDescription().equalsIgnoreCase(newTask.getDescription())) {
+            return false;
+        }
+
+        // For Deadline tasks, compare deadline times
+        if (existing instanceof Deadline && newTask instanceof Deadline) {
+            Deadline existingDeadline = (Deadline) existing;
+            Deadline newDeadline = (Deadline) newTask;
+            return existingDeadline.getBy().equals(newDeadline.getBy());
+        }
+
+        // For Event tasks, compare start and end times
+        if (existing instanceof Event && newTask instanceof Event) {
+            Event existingEvent = (Event) existing;
+            Event newEvent = (Event) newTask;
+            return existingEvent.getFrom().equals(newEvent.getFrom())
+                    && existingEvent.getTo().equals(newEvent.getTo());
+        }
+
+        // For Todo tasks, description match is sufficient (already checked above)
+        return true;
     }
 
     /**
