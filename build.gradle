@@ -2,12 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
-    id 'com.gradleup.shadow' version '9.0.0'
-    id 'org.openjfx.javafxplugin' version '0.1.0'
-}
-
-checkstyle {
-    toolVersion = '11.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 repositories {
@@ -15,13 +10,23 @@ repositories {
 }
 
 dependencies {
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.11.0'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.11.0'
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.11.0'
-    
-    // JavaFX dependencies
-    implementation group: 'org.openjfx', name: 'javafx-controls', version: '17.0.2'
-    implementation group: 'org.openjfx', name: 'javafx-fxml', version: '17.0.2'
+    String javaFxVersion = '17.0.7'
+
+    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'win'
+    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'mac'
+    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'linux'
+    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'win'
+    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'mac'
+    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'linux'
+    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'win'
+    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'mac'
+    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'linux'
+    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'win'
+    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'mac'
+    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'linux'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
 }
 
 test {
@@ -39,20 +44,23 @@ test {
 }
 
 application {
-    mainClass.set("leo.LeoFX")
+    mainClass.set("leo.Launcher")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "leo"
     archiveClassifier = null
+    mergeServiceFiles()
+    
+    manifest {
+        attributes 'Main-Class': 'leo.Launcher'
+    }
 }
 
 run {
     standardInput = System.in
-}
-
-// JavaFX configuration
-javafx {
-    version = "17.0.2"
-    modules = ['javafx.controls', 'javafx.fxml']
+    jvmArgs = [
+        '--module-path', classpath.asPath,
+        '--add-modules', 'javafx.base,javafx.controls,javafx.fxml,javafx.graphics'
+    ]
 }
