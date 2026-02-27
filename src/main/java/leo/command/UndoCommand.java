@@ -62,9 +62,7 @@ public class UndoCommand extends Command {
                 storage.save(tasks);
                 ui.printUndo("Undone add command. Task removed.");
             }
-        }
-        // For mark commands, we unmark the task
-        else if (command instanceof UndoableMarkCommand) {
+        } else if (command instanceof UndoableMarkCommand) {
             UndoableMarkCommand markCommand = (UndoableMarkCommand) command;
             int index = markCommand.getTaskIndex();
             if (index >= 0 && index < tasks.size()) {
@@ -72,9 +70,7 @@ public class UndoCommand extends Command {
                 storage.save(tasks);
                 ui.printUndo("Undone mark command. Task marked as not done.");
             }
-        }
-        // For unmark commands, we mark the task
-        else if (command instanceof UndoableUnmarkCommand) {
+        } else if (command instanceof UndoableUnmarkCommand) {
             UndoableUnmarkCommand unmarkCommand = (UndoableUnmarkCommand) command;
             int index = unmarkCommand.getTaskIndex();
             if (index >= 0 && index < tasks.size()) {
@@ -82,15 +78,12 @@ public class UndoCommand extends Command {
                 storage.save(tasks);
                 ui.printUndo("Undone unmark command. Task marked as done.");
             }
-        }
-        // For delete commands, we need to re-add the deleted task
-        else if (command instanceof UndoableDeleteCommand) {
+        } else if (command instanceof UndoableDeleteCommand) {
             UndoableDeleteCommand deleteCommand = (UndoableDeleteCommand) command;
             int index = deleteCommand.getTaskIndex();
             // Note: This is a simplified undo - we can't fully restore without storing the deleted task
             ui.printUndo("Delete command cannot be fully undone. Task was at index " + (index + 1));
-        }
-        else {
+        } else {
             ui.printUndo("Command type cannot be undone.");
         }
     }

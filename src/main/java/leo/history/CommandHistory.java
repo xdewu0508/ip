@@ -2,7 +2,6 @@ package leo.history;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import leo.command.Command;
 
 /**
