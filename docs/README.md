@@ -8,8 +8,8 @@ Leo is a command-line task manager chatbot that helps you organize daily tasks w
 
 ## Quick Start
 
-1. Download `duke.jar`
-2. Run: `java -jar duke.jar`
+1. Download `leo.jar`
+2. Run: `java -jar leo.jar`
 3. Start typing commands!
 
 ## Commands
@@ -43,7 +43,7 @@ Leo is a command-line task manager chatbot that helps you organize daily tasks w
 
 ## System Requirements
 
-- Java 17 or higher
+- Java 17
 
 ---
 
